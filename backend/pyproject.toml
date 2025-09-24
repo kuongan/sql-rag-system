@@ -1,0 +1,38 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "kuongan",email = "khuongan66@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.116.1"
+uvicorn = {extras = ["standard"], version = "^0.35.0"}
+langchain = "^0.3.27"
+langgraph = "^0.6.7"
+sqlalchemy = "^2.0.43"
+langchainhub = "^0.1.21"
+langchain-community = "^0.3.29"
+langchain-google-genai = "^2.0.8"
+langsmith = "^0.4.0"
+faiss-cpu = "^1.8.0"
+matplotlib = "^3.8.2"
+seaborn = "^0.13.0"
+plotly = "^5.18.0"
+python-multipart = "^0.0.6"
+pydantic = "^2.5.0"
+pandas = "^2.1.0"
+requests = "^2.31.0"
+pypdf2 = "^3.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
