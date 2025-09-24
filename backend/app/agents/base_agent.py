@@ -8,33 +8,19 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, List, TypeVar, Generic, Type, Optional
 from typing_extensions import TypedDict
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import BaseMessage, AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
 from langchain_core.language_models import BaseChatModel
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
-
 from app.models.agents import BaseAgentState, BaseAgentResult
+from app.utils.manager import get_llm
+
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar('T', bound='BaseAgentState')
-
-class BaseAgentState(TypedDict):
-    messages: List[BaseMessage]
-    user_query: Optional[str]
-    agent_type: Optional[str]
-    conversation_id: Optional[str]
-    metadata: Optional[Dict[str, Any]]
-    error: Optional[str]
-
-class BaseAgentResult(ABC):
-    def __init__(self, success: bool, error: Optional[str] = None):
-        self.success = success
-        self.error = error
-        self.agent_type = self.__class__.__name__.replace('Result', '').lower()
 
 class BaseAgent(Generic[T], ABC):
     """
@@ -71,11 +57,7 @@ class BaseAgent(Generic[T], ABC):
     def _initialize_llm(self) -> BaseChatModel:
         """Initialize the language model"""
         try:
-            return ChatGoogleGenerativeAI(
-            model=self.model_name,
-            temperature=self.temperature,
-            google_api_key=os.getenv("GOOGLE_API_KEY"),
-        )
+            return get_llm(model_name=self.model_name, temperature=self.temperature)
         except Exception as e:
             logger.error(f"Failed to initialize LLM for {self.agent_name}: {e}")
             raise
