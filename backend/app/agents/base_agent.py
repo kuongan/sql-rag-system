@@ -1,21 +1,16 @@
-
-"""
-Base Agent Class - Abstract base class for all LangGraph agents
-Provides common functionality, patterns, and structure for agent inheritance
-"""
 import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, TypeVar, Generic, Type, Optional
-from typing_extensions import TypedDict
-import os
+from typing import Dict, Any, List, TypeVar, Generic, Type
+
 from langchain_core.messages import BaseMessage, AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
 from langchain_core.language_models import BaseChatModel
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
-from app.models.agents import BaseAgentState, BaseAgentResult
+
 from app.utils.manager import get_llm
+from app.models.agents import BaseAgentState, BaseAgentResult
 
 
 logger = logging.getLogger(__name__)
@@ -49,7 +44,7 @@ class BaseAgent(Generic[T], ABC):
         self.memory = MemorySaver() if enable_memory else None
         self.llm = self._initialize_llm()
         self.tools = self._get_tools()
-        self.llm.bind_tools(self.tools) if self.tools else self.llm
+        self.llm_with_tools = self.llm.bind_tools(self.tools) if self.tools else self.llm
         self.graph = self._create_graph()
         
         logger.info(f"{self.agent_name} initialized with {len(self.tools)} tools")
@@ -120,7 +115,7 @@ class BaseAgent(Generic[T], ABC):
             # Get current messages
             messages = state["messages"]
             messages = self._add_agent_context(messages, state)
-            response = self.llm.invoke(messages)
+            response = self.llm_with_tools.invoke(messages)
             updated_messages = messages + [response]
             state["messages"] = updated_messages
             state = self._update_agent_state(state, response)
@@ -149,10 +144,12 @@ class BaseAgent(Generic[T], ABC):
                 tool_function = next((t for t in self.tools if t.name == tool_name), None)
 
                 if tool_function:
+                    tool_args = self._preprocess_tool_args(tool_args, state)
                     result = tool_function.invoke(tool_args)
                     tool_messages.append(
                         ToolMessage(content=str(result), tool_call_id=tool_call["id"])
                     )
+                    
                     state = self._process_tool_result(state, tool_name, result)
                 else:
                     msg = f"Tool {tool_name} not found"
