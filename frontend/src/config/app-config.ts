@@ -2,7 +2,7 @@
 
 export const config = {
   // API endpoint
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000',
+  apiBaseUrl: process.env.BACKEND_URL || 'http://localhost:8000',
   
   // Feature flags
   features: {

@@ -1,9 +1,7 @@
 import { QueryRequest, OrchestratorResponse, ApiResponse } from '~/types/api'
 
 // Use direct backend calls in development, Next.js API routes in production
-const BASE_URL = process.env.NODE_ENV === 'development' 
-  ? (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000')
-  : ''
+const BASE_URL = process.env.BACKEND_URL || 'http://localhost:8000'
 
 class ApiError extends Error {
   constructor(
