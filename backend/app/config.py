@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     # Application
     PROJECT_NAME: str = "Text2SQL Multi-Agent System"
     VERSION: str = "1.0.0"
-    API_V1_STR: str = "/api/v1"
+    API_STR: str = "/api"
     
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = [

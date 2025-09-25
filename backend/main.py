@@ -30,7 +30,7 @@ def create_application() -> FastAPI:
         title=settings.PROJECT_NAME,
         version="1.0.0",
         description="Multi-Agent System for Text2SQL with RAG, LangGraph, LangChain, and LangSmith",
-        openapi_url=f"{settings.API_V1_STR}/openapi.json",
+        openapi_url=f"{settings.API_STR}/openapi.json",
         lifespan=lifespan
     )
 
@@ -50,7 +50,7 @@ def create_application() -> FastAPI:
     )
 
     # Include routers
-    app.include_router(agents_router, prefix=settings.API_V1_STR)  # Multi-agent router
+    app.include_router(agents_router, prefix=settings.API_STR)  # Multi-agent router
 
     @app.get("/")
     async def root():
@@ -64,8 +64,8 @@ def create_application() -> FastAPI:
                 "Data Plotting Agent - Create visualizations and charts",
                 "Orchestrator Agent - Coordinate all agents"
             ],
-            "docs": f"{settings.API_V1_STR}/docs",
-            "capabilities": f"{settings.API_V1_STR}/agents/capabilities",
+            "docs": f"{settings.API_STR}/docs",
+            "capabilities": f"{settings.API_STR}/agents/capabilities",
             "health": "/health"
         }
 
