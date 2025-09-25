@@ -1,14 +1,19 @@
 # SQL RAG System Backend
 
+A sophisticated multi-agent system that combines SQL querying, document retrieval, and data visualization capabilities using LangGraph and ReAct patterns.
+
 ## 🏗️ Architecture
 
-The backend is built with a modular architecture featuring:
+The backend is built with a modular agent-based architecture featuring:
 
-- **Agent-based System**: LangGraph agents for different data processing tasks
-- **Multi-model Support**: Integration with Google Gemini AI via LangChain
-- **Vector Storage**: FAISS for document embeddings and similarity search
-- **Database Integration**: SQLite support with schema introspection
+- **ReAct Orchestrator**: Intelligent agent coordination using ReAct (Reasoning + Acting) pattern
+- **Specialized Agents**: SQL, RAG, and Plotting agents with specific expertise
+- **LangGraph Framework**: State management and agent workflow orchestration
+- **Multi-model Support**: Google Gemini AI integration via LangChain
+- **Vector Storage**: FAISS for document embeddings and semantic search
+- **Database Integration**: SQLite support with automatic schema introspection
 - **Load Balancing**: Multi-key API management for scalability
+- **Conversation Memory**: Persistent context across interactions
 
 ## �🚀 Quick Start
 
@@ -40,36 +45,19 @@ Or using pip:
 ```bash
 pip install -r requirements.txt
 ```
+### 3. Initialize Data Stores
 
-### 3. Initialize Data
-
-Process PDF documents to FAISS:
+Process PDF documents to FAISS vector store:
 ```bash
 python scripts/ingest_pdf_to_faiss.py
 ```
 
-Migrate SQLite data:
+Migrate SQLite data to main database:
 ```bash
 python scripts/ingest_sqlite_to_sql.py
 ```
 
-## 🤖 Agents System
-
-### Base Agent (`app/agents/base_agent.py`)
-Abstract base class providing:
-- LLM initialization with multi-key support
-- State management with LangGraph
-- Tool integration framework
-- Error handling and logging
-
-### SQL Agent
-Specialized agent for database operations:
-- Natural language to SQL conversion
-- Database schema introspection
-- Query execution and result formatting
-- Error handling for malformed queries
-
-## 📊 Database Schema
+## Database Schema
 
 The system works with travel booking data containing:
 
@@ -82,34 +70,26 @@ The system works with travel booking data containing:
 - **ticket_flights** (1,045,726 rows) - Ticket-flight relationships
 - **tickets** (366,733 rows) - Ticket information
 
-## 🔧 Key Components
+## API Integration
+```http
+# Orchestrator endpoint (recommended)
+POST /api/v1/orchestrator/query
+{
+  "query": "Show me flight statistics and visualize the data",
+  "conversation_id": "session_123",
+  "user_id": "user_456"
+}
 
-### API Key Management (`app/utils/manager.py`)
-- Multi-key rotation for rate limit management
-- Automatic failover between API keys
-- Load balancing strategies (round-robin, random)
+# Direct agent access
+POST /api/v1/agents/sql/query
+{"question": "SELECT COUNT(*) FROM flights"}
 
-### Database Utilities (`app/utils/database.py`)
-- SQLite connection management
-- Schema introspection
-- Query execution with error handling
-- Result formatting and validation
+POST /api/v1/agents/rag/query  
+{"question": "What are the check-in procedures?"}
 
-### Data Models (`app/models/agents/`)
-- Type-safe state management
-- Pydantic models for validation
-- Extensible agent result structures
-
-## 🛠️ Scripts
-
-### PDF Ingestion (`scripts/ingest_pdf_to_faiss.py`)
-- Extracts text from PDF documents
-- Semantic chunking with overlap
-- Embedding generation using Google GenAI
-- FAISS index creation and persistence
-
-### SQLite Migration (`scripts/ingest_sqlite_to_sql.py`)
-- Automated table structure detection
-- Data type mapping and conversion
-- Batch processing for large datasets
-- Target database table creation
+POST /api/v1/agents/plotting/create
+{
+  "data": [...],
+  "plot_request": "Create a line chart showing trends"
+}
+```
