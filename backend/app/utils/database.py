@@ -7,12 +7,29 @@ import logging
 from typing import Dict, Any, List, Optional
 import sqlite3
 from pathlib import Path
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
 def get_database_path() -> str:
     """Get the database file path"""
     return os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "travel.sqlite")
+
+def normalize_datetime(val: str) -> Optional[str]:
+    """Normalize datetime to 'YYYY-MM-DD HH:MM:SS' format"""
+    if not val or val == "\\N":
+        return None
+    try:
+        clean_val = val.split("+")[0].strip()  # bỏ timezone
+        # Trường hợp chỉ có ngày (book_date)
+        if len(clean_val) == 10:  # YYYY-MM-DD
+            dt = datetime.strptime(clean_val, "%Y-%m-%d")
+        else:
+            dt = datetime.fromisoformat(clean_val)
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception:
+        return val
+
 
 def get_database_schema(db_path: str) -> Dict[str, Any]:
     """Get database schema information"""
@@ -47,9 +64,9 @@ def get_database_schema(db_path: str) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"Error getting database schema: {e}")
         return {}
-
+    
 def execute_sql_query(query: str, db_path: str) -> Dict[str, Any]:
-    """Execute SQL query safely"""
+    """Execute SQL query safely with datetime normalization"""
     try:
         dangerous_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'ALTER', 'CREATE']
         query_upper = query.upper()
@@ -70,9 +87,26 @@ def execute_sql_query(query: str, db_path: str) -> Dict[str, Any]:
         cursor.execute(query)
         rows = cursor.fetchall()
         
-        # Convert to list of dictionaries
-        data = [dict(row) for row in rows]
-        row_count = len(data)
+        # xác định cột datetime theo table
+        datetime_fields = {
+            "flights": {"scheduled_departure", "scheduled_arrival", "actual_departure", "actual_arrival"},
+            "bookings": {"book_date"}
+        }
+        
+        # parse table name từ query (chỉ đơn giản lấy sau FROM)
+        table_name = None
+        tokens = query_upper.split()
+        if "FROM" in tokens:
+            table_name = tokens[tokens.index("FROM") + 1].lower()
+        
+        data = []
+        for row in rows:
+            row_dict = dict(row)
+            if table_name in datetime_fields:
+                for k in datetime_fields[table_name]:
+                    if k in row_dict:
+                        row_dict[k] = normalize_datetime(row_dict[k])
+            data.append(row_dict)
         
         conn.close()
         
@@ -80,7 +114,7 @@ def execute_sql_query(query: str, db_path: str) -> Dict[str, Any]:
             "success": True,
             "query": query,
             "data": data,
-            "row_count": row_count,
+            "row_count": len(data),
             "error": None
         }
         
