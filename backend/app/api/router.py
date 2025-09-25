@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from app.models.schemas import QueryRequest, QueryResponse
-from app.agents.orchestrator_agent import orchestrator
+from app.agents.orchestrator_agent import orchestrator_agent
 from app.agents.sql_agent import sql_agent
 from app.agents.rag_agent import rag_agent
 from app.agents.plotting_agent import plotting_agent
@@ -26,7 +26,7 @@ async def query_agents(request: QueryRequest):
     """Main query endpoint with conversation management"""
     try:
         # Call the orchestrator with conversation management
-        result = orchestrator.process_with_conversation(
+        result = orchestrator_agent.process_with_conversation(
             query=request.query,
             conversation_id=request.conversation_id,
             user_id=request.user_id
@@ -258,7 +258,7 @@ async def get_agents_status():
                 "sql_agent": "available",
                 "rag_agent": "available", 
                 "plotting_agent": "available",
-                "orchestrator": "available"
+                "orchestrator_agent": "available"
             },
             "database": "connected",
             "faiss_store": "loaded"

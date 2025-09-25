@@ -110,7 +110,7 @@ def use_plotting_agent(query: str, context: Optional[Any] = None,  conversation_
                     logger.warning(f"Could not parse context data: {context}")
         
 
-        result = plotting_agent.create_visualization(plot_request=query,data = plot_data, conversation_id=conversation_id)
+        result = plotting_agent.create_visualization(data=plot_data, plot_request=query, conversation_id=conversation_id)
         
         return {
             "success": result.success,

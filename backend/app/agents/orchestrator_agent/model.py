@@ -77,10 +77,14 @@ class OrchestratorAgent(BaseAgent[OrchestratorState]):
         # Always add conversation_id
         tool_args["conversation_id"] = state.get("conversation_id", "default")
         
-        # Add current data as context if available
-        current_data = state.get("current_data").get("data") if isinstance(state.get("current_data"), dict) else state.get("current_data")
-        if current_data and not tool_args.get("context"):
-            tool_args["context"] = current_data
+        # For plotting agent, extract just the data array
+        current_data = state.get("current_data")
+        if current_data and isinstance(current_data, dict):
+            # If it's a result from SQL agent, extract the data array
+            if current_data.get("agent_type") == "sql" and current_data.get("data"):
+                tool_args["context"] = current_data["data"]  # Just the data array
+            elif not tool_args.get("context"):
+                tool_args["context"] = current_data
             
         return tool_args
     
@@ -270,27 +274,27 @@ class OrchestratorAgent(BaseAgent[OrchestratorState]):
 # Initialize orchestrator agent
 orchestrator_agent = OrchestratorAgent()
 
-# def run_orchestrator_tests():
-#     print("\n=== Test 1: Greeting ===")
-#     query1 = "who are you"
-#     result1 = orchestrator_agent.process_with_conversation(query=query1)
-#     print(json.dumps(result1, indent=2, ensure_ascii=False))
+def main():
+    print("\n=== Test 1: Greeting ===")
+    query1 = "Create a bar chart showing the top 10 most popular flight destinations"
+    result1 = orchestrator_agent.process_with_conversation(query=query1)
+    print(json.dumps(result1, indent=2, ensure_ascii=False))
 
-#     print("\n=== Test 2: SQL Data Query ===")
-#     query2 = "Get the first 5 flights"
-#     result2 = orchestrator_agent.process_with_conversation(query=query2)
-#     print(json.dumps(result2, indent=2, ensure_ascii=False))
+    # print("\n=== Test 2: SQL Data Query ===")
+    # query2 = "Get the first 5 flights"
+    # result2 = orchestrator_agent.process_with_conversation(query=query2)
+    # print(json.dumps(result2, indent=2, ensure_ascii=False))
 
-#     print("\n=== Test 3: RAG / Policy Query ===")
-#     query3 = "What is the checked baggage policy of Swiss Airlines?"
-#     result3 = orchestrator_agent.process_with_conversation(query=query3)
-#     print(json.dumps(result3, indent=2, ensure_ascii=False))
+    # print("\n=== Test 3: RAG / Policy Query ===")
+    # query3 = "What is the checked baggage policy of Swiss Airlines?"
+    # result3 = orchestrator_agent.process_with_conversation(query=query3)
+    # print(json.dumps(result3, indent=2, ensure_ascii=False))
 
-#     # print("\n=== Test 4: Visualization Request ===")
-#     # query4 = "Create a bar plot of flight prices "
-#     # result4 = orchestrator_agent.process_with_conversation(query=query4, user_id="test_user")
-#     # print(json.dumps(result4, indent=2, ensure_ascii=False))
+    # print("\n=== Test 4: Visualization Request ===")
+    # query4 = "Create a bar plot of flight prices "
+    # result4 = orchestrator_agent.process_with_conversation(query=query4, user_id="test_user")
+    # print(json.dumps(result4, indent=2, ensure_ascii=False))
 
-# if __name__ == "__main__":
-#     run_orchestrator_tests()
+if __name__ == "__main__":
+    main()
 

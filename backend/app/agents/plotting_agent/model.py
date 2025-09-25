@@ -124,7 +124,6 @@ class PlottingAgent(BaseAgent[PlottingAgentState]):
     def create_visualization(self, data: list, plot_request: str, conversation_id: str = "default") -> PlottingAgentResult:
         return self.process(plot_request, conversation_id=conversation_id, plot_data=data)
 
-# Khởi tạo instance để dùng
 plotting_agent = PlottingAgent()
 
 # # Sample SQL-like data
