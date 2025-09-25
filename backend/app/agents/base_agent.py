@@ -248,9 +248,10 @@ class BaseAgent(Generic[T], ABC):
             
         except Exception as e:
             logger.error(f"Error processing query in {self.agent_name}: {e}")
-            result = BaseAgentResult(success=False, error=str(e))
-            result.agent_type = self.agent_name.lower()
-            return result
+            # Create error state and use _extract_result to maintain consistency
+            error_state = self._create_initial_state(query, conversation_id)
+            error_state["error"] = str(e)
+            return self._extract_result(error_state)
     
     def get_agent_info(self) -> Dict[str, Any]:
         """Get information about this agent"""

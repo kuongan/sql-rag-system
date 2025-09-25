@@ -1,9 +1,9 @@
 """
 Base models for all agents.
 """
-from abc import ABC
 from typing import TypedDict, Optional, Dict, Any, List
 from langchain_core.messages import BaseMessage
+
 class BaseAgentState(TypedDict):
     """Base state structure for all agents"""
     messages: List[BaseMessage]
@@ -13,7 +13,7 @@ class BaseAgentState(TypedDict):
     metadata: Optional[Dict[str, Any]]
     error: Optional[str]
 
-class BaseAgentResult(ABC):
+class BaseAgentResult:
     """Base result structure for all agents"""
     def __init__(self, success: bool, error: Optional[str] = None):
         self.success = success
