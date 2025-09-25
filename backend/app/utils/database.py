@@ -126,3 +126,26 @@ def execute_sql_query(query: str, db_path: str) -> Dict[str, Any]:
             "data": [],
             "row_count": 0
         }
+
+if __name__ == "__main__":
+    db_path = get_database_path()
+
+    # Test 1: Lấy vài dòng trong bookings để xem book_date có được normalize chưa
+    result1 = execute_sql_query("SELECT book_ref, book_date, total_amount FROM bookings LIMIT 5;", db_path)
+    print("Test 1 - Sample bookings:")
+    print(result1)
+
+    # Test 2: Thử group by month
+    result2 = execute_sql_query("""
+        SELECT strftime('%Y-%m', book_date) AS month, COUNT(*) AS num_bookings
+        FROM bookings
+        GROUP BY month
+        ORDER BY month;
+    """, db_path)
+    print("Test 2 - Bookings per month:")
+    print(result2)
+
+    # Test 3: Kiểm tra NULL book_date
+    result3 = execute_sql_query("SELECT COUNT(*) AS null_count FROM bookings WHERE book_date IS NULL;", db_path)
+    print("Test 3 - NULL book_date count:")
+    print(result3)
