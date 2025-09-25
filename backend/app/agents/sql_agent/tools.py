@@ -108,20 +108,7 @@ def execute_sql_query_tool(question: str) -> str:
         
         # Execute the query
         result = execute_sql_query(sql_query, db_path)
-        
-        if result['success']:
-            response_text = f"Query executed successfully!\n\n"
-            response_text += f"SQL Query: {sql_query}\n\n"
-            response_text += f"Results ({result['row_count']} rows):\n"
-            if result['data']:
-                for i, row in enumerate(result['data'], 1):   # duyệt toàn bộ data
-                    response_text += f"Row {i}: {row}\n"
-            else:
-                response_text += "No data returned\n"
-            return response_text
-        else:
-            return f"Query failed: {result['error']}\nSQL Query attempted: {sql_query}"
-            
+        return result['data']            
     except Exception as e:
         logger.error(f"Error in SQL query execution: {e}")
         return f"Error executing SQL query: {str(e)}"

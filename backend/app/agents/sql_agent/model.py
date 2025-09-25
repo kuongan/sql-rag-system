@@ -69,45 +69,56 @@ class SQLAgent(BaseAgent[SQLAgentState]):
         return messages
     
     def _process_tool_result(self, state: SQLAgentState, tool_name: str, result: Any) -> SQLAgentState:
-        """Process SQL tool results and update state (compact version)"""
+        """
+        Process results from SQL tools and update the agent state.
+
+        Args:
+            state: Current SQLAgentState
+            tool_name: Name of the tool used
+            result: Result returned by the tool
+
+        Returns:
+            Updated SQLAgentState
+        """
         try:
             if tool_name == "get_database_schema":
+                # Store schema info
                 state["database_schema"] = str(result)
+                # Optionally append a system message about schema availability
+                state["messages"] = state["messages"] + [AIMessage(
+                    content=f"Database schema retrieved successfully:\n{str(result)}"
+                )]
                 logger.info("Database schema retrieved and stored in state")
 
             elif tool_name == "execute_sql_query":
-                state["sql_query"], state["sql_data"], state["row_count"] = "", [], 0
-                m = re.search(r"Results \((\d+) rows\):", result)
-                if m:
-                    state["row_count"] = int(m.group(1))
-                m = re.search(r"SQL Query:\s*(.*)", result)
-                if m:
-                    state["sql_query"] = m.group(1).strip()
-                data_rows = []
-                for line in result.splitlines():
-                    line = line.strip()
-                    if line.startswith("Row ") and ":" in line:
-                        data_part = line.split(":", 1)[1].strip()
-                        if data_part.startswith("{") and data_part.endswith("}"):
-                            try:
-                                row_dict = eval(data_part)
-                                if isinstance(row_dict, dict):
-                                    data_rows.append(row_dict)
-                            except Exception:
-                                pass
-                        elif data_part.startswith("(") and data_part.endswith(")"):
-                            values = [v.strip().strip("'\"") for v in data_part[1:-1].split(",")]
-                            data_rows.append({f"column_{i}": v for i, v in enumerate(values)})
-                state["sql_data"] = data_rows
-                state["row_count"] = len(data_rows)
-
+                # Result should be a list of rows or structured result
+                if isinstance(result, str):
+                    state["sql_data"] = []
+                    state["row_count"] = 0
+                    state["messages"] = state["messages"] + [AIMessage(
+                        content=f"SQL query executed: {result}"
+                    )]
+                else:
+                    state["sql_data"] = result if isinstance(result, list) else []
+                    state["row_count"] = len(state["sql_data"]) if state["sql_data"] else 0
+                    state["messages"] = state["messages"] + [AIMessage(
+                        content=f"SQL query executed successfully. {state['row_count']} rows returned."
+                    )]
                 logger.info(f"SQL execution completed: {state['row_count']} rows returned")
+
+            else:
+                # Unknown tool
+                state["messages"] = state["messages"] + [AIMessage(
+                    content=f"Tool '{tool_name}' executed, but no state update logic defined."
+                )]
+
             return state
 
         except Exception as e:
-            logger.error(f"Error processing tool result: {e}")
-            state["error"] = f"Error processing {tool_name} result: {str(e)}"
+            logger.error(f"Error processing tool result for '{tool_name}': {e}")
+            state["error"] = f"Error processing tool result: {str(e)}"
             return state
+
     
     def _extract_result(self, final_state: SQLAgentState) -> SQLAgentResult:
         """Extract SQL result from final state"""
@@ -115,10 +126,8 @@ class SQLAgent(BaseAgent[SQLAgentState]):
             # Determine success based on whether we have data and no errors
             success = (final_state.get("sql_data") is not None and 
                       final_state.get("error") is None)
-            
             # Create explanation from messages
             explanation = self._create_explanation(final_state)
-            
             return SQLAgentResult(
                 success=success,
                 sql_query=final_state.get("sql_query"),
