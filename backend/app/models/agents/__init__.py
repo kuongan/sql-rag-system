@@ -2,6 +2,7 @@ from .base import BaseAgentState, BaseAgentResult
 from .sql import SQLAgentState, SQLAgentResult
 from .rag import RAGAgentState, RAGAgentResult
 from .plotting import PlottingAgentState, PlottingAgentResult, PlotCreationInput, DataAnalysisInput
+from .orchestrator import AgentInput, OrchestratorState
 __all__ = [
     # Base classes
     "BaseAgentState",
@@ -13,5 +14,7 @@ __all__ = [
     "PlottingAgentState",
     "PlottingAgentResult",
     "PlotCreationInput",
-    "DataAnalysisInput"
+    "DataAnalysisInput",
+    "AgentInput",
+    "OrchestratorState"
 ]

@@ -128,31 +128,31 @@ class PlottingAgent(BaseAgent[PlottingAgentState]):
 plotting_agent = PlottingAgent()
 
 # # Sample SQL-like data
-sample_data = [
-    {"flight_id": 1, "departure": "vt", "arrival": "hcm", "price": 120},
-    {"flight_id": 2, "departure": "Hn", "arrival": "Dn", "price": 80},
-    {"flight_id": 3, "departure": "hcm", "arrival": "Hn", "price": 130},
-    {"flight_id": 4, "departure": "Dn", "arrival": "Hn", "price": 90},
-    {"flight_id": 5, "departure": "Hn", "arrival": "Hue", "price": 70},
-]
+# sample_data = [
+#     {"flight_id": 1, "departure": "vt", "arrival": "hcm", "price": 120},
+#     {"flight_id": 2, "departure": "Hn", "arrival": "Dn", "price": 80},
+#     {"flight_id": 3, "departure": "hcm", "arrival": "Hn", "price": 130},
+#     {"flight_id": 4, "departure": "Dn", "arrival": "Hn", "price": 90},
+#     {"flight_id": 5, "departure": "Hn", "arrival": "Hue", "price": 70},
+# ]
 
-# 1️⃣ Test analysis
-print("\n=== Agent Data Analysis Test ===")
-analysis_result = plotting_agent.create_visualization(
-    data=sample_data,
-    plot_request="Analyze the dataset and provide visualization recommendations",
-    conversation_id="test_analysis"
-)
-print("Success:", analysis_result.success)
+# # 1️⃣ Test analysis
+# print("\n=== Agent Data Analysis Test ===")
+# analysis_result = plotting_agent.create_visualization(
+#     data=sample_data,
+#     plot_request="Analyze the dataset and provide visualization recommendations",
+#     conversation_id="test_analysis"
+# )
+# print("Success:", analysis_result.success)
 
-# 2️⃣ Test static plot
-print("\n=== Agent Static Plot Test (Bar) ===")
-static_result = plotting_agent.create_visualization(
-    data=sample_data,
-    plot_request="Create a pie plot of flight prices by departure city",
-    conversation_id="test_static"
-)
-print("Success:", static_result.success)
-print("Plot Type:", static_result.plot_type)
-print("Image Base64 (first 100 chars):", str(static_result.image_base64)[:100], "...")
-print("Error:", static_result.error, "\n")
+# # 2️⃣ Test static plot
+# print("\n=== Agent Static Plot Test (Bar) ===")
+# static_result = plotting_agent.create_visualization(
+#     data=sample_data,
+#     plot_request="Create a pie plot of flight prices by departure city",
+#     conversation_id="test_static"
+# )
+# print("Success:", static_result.success)
+# print("Plot Type:", static_result.plot_type)
+# print("Image Base64 (first 100 chars):", str(static_result.image_base64)[:100], "...")
+# print("Error:", static_result.error, "\n")

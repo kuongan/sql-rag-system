@@ -191,6 +191,7 @@ if __name__ == "__main__":
     print("\n--- TEST 3: Count bookings ---")
     result = sql_agent.generate_sql("the number of tickets sold in each fare class")
     print("Success:", result.success)
+    print("Success:", result)
     print("SQL Query:", result.sql_query)
     print("Row Count:", result.row_count)
     print("Data:", result.data)
