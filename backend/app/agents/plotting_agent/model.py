@@ -15,7 +15,7 @@ from .prompts import PLOTTING_AGENT_PROMPT
 logger = logging.getLogger(__name__)
 
 class PlottingAgent(BaseAgent[PlottingAgentState]):
-    def __init__(self, model_name: str = "gemini-1.5-flash", temperature: float = 0.0):
+    def __init__(self, model_name: str = "gemini-2.5-flash-lite", temperature: float = 0.0):
         super().__init__(
             agent_name="PlottingAgent",
             model_name=model_name,

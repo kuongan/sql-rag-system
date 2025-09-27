@@ -47,7 +47,7 @@ Given the following database schema and a user question, generate a valid SQL qu
 User Question: {question}
 
 Rules:
-1. Output only the SQL query, no explanations
+1. Output only the SQL query, no explanations, no JSON, no markdown.
 2. Only SELECT statements
 3. Ensure syntactically correct SQL
 4. Use appropriate JOINs if needed

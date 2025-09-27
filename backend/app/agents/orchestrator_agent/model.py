@@ -18,7 +18,7 @@ class OrchestratorAgent(BaseAgent[OrchestratorState]):
     ReAct-based Orchestrator Agent that coordinates other specialized agents
     """
     
-    def __init__(self, model_name: str = "gemini-1.5-flash", temperature: float = 0.1):
+    def __init__(self, model_name: str = "gemini-2.5-flash-lite", temperature: float = 0.1):
         super().__init__(
             agent_name="OrchestratorAgent",
             model_name=model_name,

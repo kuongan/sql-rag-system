@@ -18,7 +18,7 @@ class RAGAgent(BaseAgent[RAGAgentState]):
     RAG Agent for document Q&A using Swiss Airlines FAQ PDF
     """
 
-    def __init__(self, model_name: str = "gemini-1.5-flash", temperature: float = 0.3):
+    def __init__(self, model_name: str = "gemini-2.5-flash-lite", temperature: float = 0.3):
         super().__init__(
             agent_name="RAGAgent",
             model_name=model_name,

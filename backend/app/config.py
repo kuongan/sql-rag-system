@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     LANGSMITH_ENDPOINT: str = "https://api.smith.langchain.com"
     
     # Agent Configuration
-    LLM_MODEL: str = "gemini-1.5-flash"
+    LLM_MODEL: str = "gemini-2.5-flash-lite"
     EMBEDDING_MODEL: str = "models/embedding-001"
     
     # Rate Limiting

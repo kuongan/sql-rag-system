@@ -91,7 +91,7 @@ def get_key_manager() -> APIKeyManager:
         _key_manager = APIKeyManager()
     return _key_manager
 
-def get_llm(model_name: str = "gemini-1.5-flash", temperature: float = 0.0) -> ChatGoogleGenerativeAI:
+def get_llm(model_name: str = "gemini-2.5-flash-lite", temperature: float = 0.0) -> ChatGoogleGenerativeAI:
     """Get LLM instance with automatic key management"""
     try:
         key_manager = get_key_manager()
