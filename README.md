@@ -1,12 +1,9 @@
-Here’s the English version of your shortened README:
-
----
-
 # SQL-RAG System
 
 A **multi-agent AI system** combining **SQL generation**, **document retrieval (RAG)**, and **data visualization**.
 Built with **LangGraph + LangChain** on the backend and **Next.js + Tailwind** on the frontend, enabling **natural language data querying** and **automatic chart generation**.
 
+![Demo](images/demo.gif)
 
 ## Setup 
 
@@ -45,8 +42,8 @@ docker-compose up -d --build
 
 
 ## 🏗️ System Architecture
-![SQL-RAG Architecture](image.png)
----
+![SQL-RAG Architecture](images/image.png)
+
 
 ## 🎯 Key Features
 
@@ -54,8 +51,6 @@ docker-compose up -d --build
 * **RAG Agent** 📚: FAISS-based semantic search, answers from docs/PDFs.
 * **Plotting Agent** 📊: Automatically generates bar/line/pie charts from data.
 * **Orchestrator (ReAct)** 🤖: Intent detection, agent coordination, context management.
-
----
 
 ## 🔧 Tech Stack
 
